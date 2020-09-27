@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import axios from 'axios'
 
 class UserSignupPage extends Component {
 
@@ -19,6 +20,22 @@ class UserSignupPage extends Component {
             [name]: value
         })
 
+    }
+
+    onClickSignUp = (event) =>{
+        event.preventDefault();
+
+       // const body= {...this.state}
+
+       const {username,displayname,password} = this.state
+
+       const body = {
+           username,
+           displayname,
+           password
+       }
+
+        axios.post("/api/1.0/users/",body)
     }
 
     render() {
@@ -53,7 +70,7 @@ class UserSignupPage extends Component {
                             </div>
 
                             <div className="col text-center" style={{marginTop:'25px'}}>
-                                <button type="button" style={{ background: "purple", border: "purple" }} className="btn btn-info">Sign Up</button>
+                                <button onClick={this.onClickSignUp} type="button" style={{ background: "purple", border: "purple" }} className="btn btn-info">Sign Up</button>
                             </div>
 
                         </div>
