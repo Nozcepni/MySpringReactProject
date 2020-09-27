@@ -3,17 +3,18 @@ import axios from 'axios'
 
 class UserSignupPage extends Component {
 
-    state={
-        username:null,
-        displayname:null,
-        password:null,
-        passwordRepeat:null
+    state = {
+        username: null,
+        displayname: null,
+        password: null,
+        passwordRepeat: null,
+        pendingApiCall: false
     }
 
 
-    onChange= (event) =>{
+    onChange = (event) => {
 
-        const {name,value} = event.target
+        const { name, value } = event.target
 
 
         this.setState({
@@ -22,29 +23,36 @@ class UserSignupPage extends Component {
 
     }
 
-    onClickSignUp = (event) =>{
+    onClickSignUp = (event) => {
+
+        this.setState({
+            pendingApiCall:true
+        })
+
         event.preventDefault();
 
-       const body= {...this.state}
+        const body = { ...this.state }
 
-      /* const {username,displayname,password} = this.state
+        axios.post("/api/1.0/users/", body).then( (response) =>{
+            this.setState({pendingApiCall:false});
+        }).catch( (error)=>{
+            this.setState({pendingApiCall:false});
+        })
 
-       const body = {
-           username,
-           displayname,
-           password
-       }*/
+        
 
-        axios.post("/api/1.0/users/",body)
     }
 
     render() {
+
+        const {pendingApiCall} = this.state
+
         return (
             <div>
                 <form>
 
                     <div className="col text-center" style={{ marginBottom: "100px,", marginTop: "20px" }}>
-                        <h1> Signup Page</h1>
+                        <h1> Sign Up</h1>
                     </div>
 
                     <div className="form-group">
@@ -56,21 +64,25 @@ class UserSignupPage extends Component {
 
                             <div>
                                 <label> Displayname</label>
-                                <input name="displayname" type="input" className="form-control" id="exampleInputEmail1"  onChange={this.onChange} />
+                                <input name="displayname" type="input" className="form-control" id="exampleInputEmail1" onChange={this.onChange} />
                             </div>
 
                             <div>
                                 <label> Password</label>
-                                <input name="password" type="password" className="form-control" id="exampleInputEmail1"  onChange={this.onChange} />
+                                <input name="password" type="password" className="form-control" id="exampleInputEmail1" onChange={this.onChange} />
                             </div>
 
                             <div>
                                 <label> Password Repeat</label>
-                                <input name="passwordRepeat" type="password" className="form-control" id="exampleInputEmail1"  onChange={this.onChange} />
+                                <input name="passwordRepeat" type="password" className="form-control" id="exampleInputEmail1" onChange={this.onChange} />
                             </div>
 
-                            <div className="col text-center" style={{marginTop:'25px'}}>
-                                <button onClick={this.onClickSignUp} type="button" style={{ background: "purple", border: "purple" }} className="btn btn-info">Sign Up</button>
+                            <div className="col text-center" style={{ marginTop: '25px' }}>
+                                <button disabled={pendingApiCall} onClick={this.onClickSignUp} type="button" style={{ background: "purple", border: "purple" }} className="btn btn-info ">
+                                   { pendingApiCall &&
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+                                    Sign Up
+                                    </button>
                             </div>
 
                         </div>
