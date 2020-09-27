@@ -11,13 +11,4 @@ public class User {
 	private String password;
 	private String passwordRepeat;
 	
-	
-	@Override
-	public String toString() {
-		return "User [username=" + username + ", displayname=" + displayname + ", password=" + password
-				+ ", passwordRepeat=" + passwordRepeat + "]";
-	}
-	
-	
-	
 }
