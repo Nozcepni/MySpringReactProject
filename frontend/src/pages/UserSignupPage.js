@@ -60,7 +60,7 @@ class UserSignupPage extends Component {
     render() {
 
         const { pendingApiCall,errors } = this.state;
-        const {username,displayname} = errors;
+        const {username,displayname,password} = errors;
 
 
         return (
@@ -78,11 +78,9 @@ class UserSignupPage extends Component {
 
                             <Input label="Displayname" name="displayname" error={displayname} onChange={this.onChange}></Input>
 
+                            <Input label="Password" type="password" name="password" error={password} onChange={this.onChange}></Input>
 
-                            <div>
-                                <label> Password</label>
-                                <input name="password" type="password" className="form-control" id="exampleInputEmail1" onChange={this.onChange} />
-                            </div>
+                            
 
                             <div>
                                 <label> Password Repeat</label>
