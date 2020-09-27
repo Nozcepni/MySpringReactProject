@@ -7,18 +7,24 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hoaxify.ws.shared.GenericResponse;
+
 @RestController
 public class UserController {
 	
 	@Autowired
-	IUserRepository userRepository;
+	UserService userService;
 	
 	//private static final Logger Log = LoggerFactory.getLogger(UserController.class);
 
 	@PostMapping("/api/1.0/users/")
-	public void createUser(@RequestBody User user) {
+	public GenericResponse createUser(@RequestBody User user) {
 		
-		userRepository.save(user);
+		userService.save(user);
+		
+		GenericResponse response = new GenericResponse("User Created");
+		
+		return response;
 		
 	}
 	
