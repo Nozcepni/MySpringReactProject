@@ -19,7 +19,7 @@ public class UserService {
 		this.passwordEncoder  = new BCryptPasswordEncoder();
 		this.userRepository = userRepository;
 	}
-
+ 
 
 	public void save(User user) {
 		String encryptedPassword = this.passwordEncoder.encode(user.getPassword());
