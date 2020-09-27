@@ -12,11 +12,11 @@ class UserSignupPage extends Component {
 
     onChange= (event) =>{
 
-        const field = event.target.name
-        const value = event.target.value
+        const {name,value} = event.target
+
 
         this.setState({
-            [field]: value
+            [name]: value
         })
 
     }
@@ -44,12 +44,12 @@ class UserSignupPage extends Component {
 
                             <div>
                                 <label> Password</label>
-                                <input name="password" type="email" className="form-control" id="exampleInputEmail1"  onChange={this.onChange} />
+                                <input name="password" type="password" className="form-control" id="exampleInputEmail1"  onChange={this.onChange} />
                             </div>
 
                             <div>
                                 <label> Password Repeat</label>
-                                <input name="passwordRepeat" type="email" className="form-control" id="exampleInputEmail1"  onChange={this.onChange} />
+                                <input name="passwordRepeat" type="password" className="form-control" id="exampleInputEmail1"  onChange={this.onChange} />
                             </div>
 
                             <div className="col text-center" style={{marginTop:'25px'}}>
