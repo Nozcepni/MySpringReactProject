@@ -25,15 +25,15 @@ class UserSignupPage extends Component {
     onClickSignUp = (event) =>{
         event.preventDefault();
 
-       // const body= {...this.state}
+       const body= {...this.state}
 
-       const {username,displayname,password} = this.state
+      /* const {username,displayname,password} = this.state
 
        const body = {
            username,
            displayname,
            password
-       }
+       }*/
 
         axios.post("/api/1.0/users/",body)
     }
