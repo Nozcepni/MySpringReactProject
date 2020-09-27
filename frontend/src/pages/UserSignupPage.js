@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {signup} from '../api/apiCalls'
+import { signup } from '../api/apiCalls'
 
 class UserSignupPage extends Component {
 
@@ -8,7 +8,8 @@ class UserSignupPage extends Component {
         displayname: null,
         password: null,
         passwordRepeat: null,
-        pendingApiCall: false
+        pendingApiCall: false,
+        errors: {}
     }
 
 
@@ -16,9 +17,14 @@ class UserSignupPage extends Component {
 
         const { name, value } = event.target
 
+        const errors = {...this.state.errors}
+
+        errors[name] = undefined
+
 
         this.setState({
-            [name]: value
+            [name]: value,
+            errors
         })
 
     }
@@ -26,27 +32,35 @@ class UserSignupPage extends Component {
     onClickSignUp = async (event) => {
 
         this.setState({
-            pendingApiCall:true
+            pendingApiCall: true
         })
 
         event.preventDefault();
 
         const body = { ...this.state }
 
-        try{
+        try {
             const response = await signup(body)
         }
-        catch (error){
-
+        catch (error) {
+            console.log(error.response.data)
+            if(error.response.data.validationErrors){
+                this.setState({
+                    errors: error.response.data.validationErrors
+                })
+            }
+            
         }
- 
-        this.setState({pendingApiCall:false})
+
+        this.setState({ pendingApiCall: false })
 
     }
 
     render() {
 
-        const {pendingApiCall} = this.state
+        const { pendingApiCall,errors } = this.state;
+        const {username,displayname} = errors;
+
 
         return (
             <div>
@@ -59,13 +73,19 @@ class UserSignupPage extends Component {
                     <div className="form-group">
                         <div className="container">
                             <div>
-                                <label> Username</label>
-                                <input name="username" type="input" className="form-control" id="exampleInputEmail1" onChange={this.onChange} />
+                                <label>Username</label>
+                                <input name="username" type="input" className={ username ? "form-control is-invalid" : "form-control"} id="exampleInputEmail1" onChange={this.onChange} />
+                                <div className="invalid-feedback">
+                                   {username}
+                                 </div>
                             </div>
 
                             <div>
                                 <label> Displayname</label>
-                                <input name="displayname" type="input" className="form-control" id="exampleInputEmail1" onChange={this.onChange} />
+                                <input name="displayname" type="input" className={ displayname ? "form-control is-invalid" : "form-control"} id="exampleInputEmail1" onChange={this.onChange} />
+                                <div className="invalid-feedback">
+                                   {displayname}
+                                 </div>
                             </div>
 
                             <div>
@@ -80,15 +100,13 @@ class UserSignupPage extends Component {
 
                             <div className="col text-center" style={{ marginTop: '25px' }}>
                                 <button disabled={pendingApiCall} onClick={this.onClickSignUp} type="button" style={{ background: "purple", border: "purple" }} className="btn btn-info ">
-                                   { pendingApiCall &&
-                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
+                                    {pendingApiCall &&
+                                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
                                     Sign Up
                                     </button>
                             </div>
 
                         </div>
-
-
 
                     </div>
 
