@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { signup } from '../api/apiCalls'
+import Input from '../components/Input'
 
 class UserSignupPage extends Component {
 
@@ -72,21 +73,11 @@ class UserSignupPage extends Component {
 
                     <div className="form-group">
                         <div className="container">
-                            <div>
-                                <label>Username</label>
-                                <input name="username" type="input" className={ username ? "form-control is-invalid" : "form-control"} id="exampleInputEmail1" onChange={this.onChange} />
-                                <div className="invalid-feedback">
-                                   {username}
-                                 </div>
-                            </div>
+                           
+                            <Input label="Username" name="username" error={username} onChange={this.onChange}></Input>
 
-                            <div>
-                                <label> Displayname</label>
-                                <input name="displayname" type="input" className={ displayname ? "form-control is-invalid" : "form-control"} id="exampleInputEmail1" onChange={this.onChange} />
-                                <div className="invalid-feedback">
-                                   {displayname}
-                                 </div>
-                            </div>
+                            <Input label="Displayname" name="displayname" error={displayname} onChange={this.onChange}></Input>
+
 
                             <div>
                                 <label> Password</label>
