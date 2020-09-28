@@ -10,7 +10,8 @@ class UserSignupPage extends Component {
         password: null,
         passwordRepeat: null,
         pendingApiCall: false,
-        errors: {}
+        errors: {},
+        ispasswordMismatch: false
     }
 
 
@@ -25,8 +26,33 @@ class UserSignupPage extends Component {
 
         this.setState({
             [name]: value,
-            errors
+            errors,
+            ispasswordMismatch:false
         })
+
+        if(name === "password" || name=== "passwordRepeat" ){
+
+            if(name==="password" && value !==this.state.passwordRepeat ){
+                
+                errors.passwordRepeat = "Password Mismatch";
+                
+                this.setState({
+                    ispasswordMismatch:true
+                })
+
+            }
+
+            else if(name==="passwordRepeat" && value !==this.state.password ){
+                
+                errors.passwordRepeat = "Password Mismatch";
+
+                this.setState({
+                    ispasswordMismatch:true
+                })
+
+            }
+
+        }
 
     }
 
@@ -55,12 +81,15 @@ class UserSignupPage extends Component {
 
         this.setState({ pendingApiCall: false })
 
+        const {password,passwordRepeat} = this.state
+
+
     }
 
     render() {
 
-        const { pendingApiCall,errors } = this.state;
-        const {username,displayname,password} = errors;
+        const { pendingApiCall,errors,ispasswordMismatch } = this.state;
+        const {username,displayname,password,passwordRepeat} = errors;
 
 
         return (
@@ -79,16 +108,13 @@ class UserSignupPage extends Component {
                             <Input label="Displayname" name="displayname" error={displayname} onChange={this.onChange}></Input>
 
                             <Input label="Password" type="password" name="password" error={password} onChange={this.onChange}></Input>
+                            
+                            <Input label="PasswordRepeat" type="password" name="passwordRepeat" error={passwordRepeat} onChange={this.onChange}></Input>
 
                             
 
-                            <div>
-                                <label> Password Repeat</label>
-                                <input name="passwordRepeat" type="password" className="form-control" id="exampleInputEmail1" onChange={this.onChange} />
-                            </div>
-
                             <div className="col text-center" style={{ marginTop: '25px' }}>
-                                <button disabled={pendingApiCall} onClick={this.onClickSignUp} type="button" style={{ background: "purple", border: "purple" }} className="btn btn-info ">
+                                <button disabled={pendingApiCall || ispasswordMismatch} onClick={this.onClickSignUp} type="button" style={{ background: "purple", border: "purple" }} className="btn btn-info ">
                                     {pendingApiCall &&
                                         <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
                                     Sign Up
