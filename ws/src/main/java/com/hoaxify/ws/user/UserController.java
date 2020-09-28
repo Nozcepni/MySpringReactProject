@@ -2,6 +2,7 @@ package com.hoaxify.ws.user;
 
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -32,7 +34,7 @@ public class UserController {
 
 	@PostMapping("/api/1.0/users/")
 	public GenericResponse createUser(@Valid @RequestBody User user) {
-		System.out.println("sdfsfd");
+		
 		userService.save(user);
 		return (new GenericResponse("user created"));
 	
@@ -53,8 +55,10 @@ public class UserController {
 
 		return error;
 		
-		
 	}
 	
+
 }
+	
+
 	

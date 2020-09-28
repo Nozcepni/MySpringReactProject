@@ -1,5 +1,6 @@
 package com.hoaxify.ws.user;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ public class User {
 	
 	@NotNull
 	@Size(min = 4, max=255)
+	@UniqueUsername 
 	private String username;
 	
 	@NotNull
