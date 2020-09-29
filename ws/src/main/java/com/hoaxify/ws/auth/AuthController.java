@@ -7,10 +7,13 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -26,20 +29,13 @@ public class AuthController {
 	@Autowired
 	IUserRepository userRepository;
 	
-	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
 	
 	@PostMapping("/api/1.0/auth")
 	@JsonView(IViews.Base.class)
-	ResponseEntity<?> handleAuthentication(@RequestHeader(name="Authorization", required = false) String authorization) {
+	ResponseEntity<?> handleAuthentication(@RequestHeader(name="Authorization") String authorization) {
 		
-		if(authorization==null) {
-			
-			ApiError error = new ApiError(401, "Unathorized Request","/api/1.0/auth");
-			
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-			
-		}
+		
 		
 		String base64encoded= authorization.split("Basic ")[1];
 		
@@ -53,28 +49,6 @@ public class AuthController {
 	
 		
 		User inDB = userRepository.findByUsername(username);
-		
-		if(inDB==null) {
-			
-			ApiError error = new ApiError(401, "Unathorized Request","/api/1.0/auth");
-			
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-			
-			
-		}
-		
-		String hashedPassowrd = inDB.getPassword();
-		
-		if(!passwordEncoder.matches(password, hashedPassowrd)) {
-			
-			ApiError error = new ApiError(401, "Unathorized Request","/api/1.0/auth");
-			
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
-			
-		}
-		
-
-		
 		
 		return ResponseEntity.ok(inDB );
 		
