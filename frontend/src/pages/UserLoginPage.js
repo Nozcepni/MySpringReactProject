@@ -1,13 +1,37 @@
 import React, { Component } from 'react'
 import Input from '../components/Input'
 import { login } from '../api/apiCalls'
+import axios from 'axios'
+import ButtonWithProgress from '../components/ButtonWithProgress'
+
 
 class UserLoginPage extends Component {
 
     state = {
         username: null,
         password: null,
-        error: null
+        error: null,
+        pendingApiCall: false
+    }
+
+    componentDidMount(){
+        axios.interceptors.request.use((request)=>{
+            this.setState({
+                pendingApiCall:true
+            })
+            return request;
+        })
+
+        axios.interceptors.response.use((response)=>{
+
+            this.setState({pendingApiCall:false});
+            return response;
+
+        },(error)=>{
+            this.setState({pendingApiCall:false});
+            throw error;
+        })
+
     }
 
 
@@ -68,9 +92,7 @@ class UserLoginPage extends Component {
                 </div>}
                 </div>
 
-                <div className="col text-center">
-                    <button onClick={this.onClickLogin} style={{ marginTop: "25px", background: "purple", border: "purple" }} className="btn btn-info " disabled={!isEmpty}>Login</button>
-                </div>
+                <ButtonWithProgress pageName="Login" pendingApiCall={pendingApiCall} onClick ={this.onClickLogin}></ButtonWithProgress>
 
 
             </div>

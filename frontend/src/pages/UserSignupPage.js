@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { signup } from '../api/apiCalls'
+import ButtonWithProgress from '../components/ButtonWithProgress'
 import Input from '../components/Input'
 
 class UserSignupPage extends Component {
@@ -111,15 +112,9 @@ class UserSignupPage extends Component {
                             
                             <Input label="PasswordRepeat" type="password" name="passwordRepeat" error={passwordRepeat} onChange={this.onChange}></Input>
 
-                            
+                            <ButtonWithProgress pageName="Sign Up" pendingApiCall={pendingApiCall} ispasswordMismatch={ispasswordMismatch} onClick ={this.onClickSignUp}></ButtonWithProgress>
 
-                            <div className="col text-center" style={{ marginTop: '25px' }}>
-                                <button disabled={pendingApiCall || ispasswordMismatch} onClick={this.onClickSignUp} type="button" style={{ background: "purple", border: "purple" }} className="btn btn-info ">
-                                    {pendingApiCall &&
-                                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>}
-                                    Sign Up
-                                    </button>
-                            </div>
+                           
 
                         </div>
 
