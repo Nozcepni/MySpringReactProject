@@ -25,7 +25,7 @@ public class UserAuthService implements UserDetailsService{
 		}
 		
 		
-		return new HoaxifyUserDetails(inDB);
+		return (inDB);
 	}
 
 	
