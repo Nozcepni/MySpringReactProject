@@ -59,10 +59,7 @@ class UserSignupPage extends Component {
 
     onClickSignUp = async (event) => {
 
-        this.setState({
-            pendingApiCall: true
-        })
-
+      
         event.preventDefault();
 
         const body = { ...this.state }
@@ -80,18 +77,15 @@ class UserSignupPage extends Component {
             
         }
 
-        this.setState({ pendingApiCall: false })
-
         const {password,passwordRepeat} = this.state
-
 
     }
 
     render() {
 
-        const { pendingApiCall,errors,ispasswordMismatch } = this.state;
+        const { errors,ispasswordMismatch } = this.state;
         const {username,displayname,password,passwordRepeat} = errors;
-
+        const {pendingApiCall} = this.props;
 
         return (
             <div>
