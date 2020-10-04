@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { signup } from '../api/apiCalls'
 import ButtonWithProgress from '../components/ButtonWithProgress'
 import Input from '../components/Input'
+import withApiProgress from '../shared/ApiProgress'
 
 class UserSignupPage extends Component {
 
@@ -121,4 +122,4 @@ class UserSignupPage extends Component {
     }
 }
 
-export default UserSignupPage;
+export default withApiProgress(UserSignupPage) ;

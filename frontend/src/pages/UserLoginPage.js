@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Input from '../components/Input'
 import { login } from '../api/apiCalls'
+import withApiProgress from '../shared/ApiProgress'
 
 import ButtonWithProgress from '../components/ButtonWithProgress'
 
@@ -14,8 +15,6 @@ class UserLoginPage extends Component {
     }
 
   
-
-
     onChange = (event) => {
 
         const { name, value } = event.target
@@ -29,6 +28,13 @@ class UserLoginPage extends Component {
 
     onClickLogin = async (event) => {
 
+        const { push } = this.props.history;
+
+        const{onLoginSuccess} = this.props
+
+        const{username,password} = this.state
+
+
         event.preventDefault();
 
         this.setState({
@@ -36,12 +42,15 @@ class UserLoginPage extends Component {
         })
 
         const creds = {
-            username: this.state.username,
-            password: this.state.password
+          username,
+          password
         }
 
         try {
             await login(creds)
+            push('/');
+            onLoginSuccess(username)
+            
         }
         catch (apiError) {
             this.setState({
@@ -83,4 +92,4 @@ class UserLoginPage extends Component {
     }
 }
 
-export default UserLoginPage
+export default withApiProgress(UserLoginPage)
