@@ -1,4 +1,4 @@
-
+import * as ACTIONS from './Constanst'
 
   const defaultState= {
 
@@ -12,8 +12,14 @@
 
   const authReducer = (state,action) =>{
  
-    if(action.type=== 'logout-success'){
+    if(action.type=== ACTIONS.LOGOUT_SUCCESS){
       return defaultState;
+    }
+    else if(action.type=== ACTIONS.LOGIN_SUCCESS){
+      return {
+        ...action.payload,
+        isLoggedIn:true
+      }
     }
   
   

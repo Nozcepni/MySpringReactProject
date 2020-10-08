@@ -3,3 +3,10 @@ export const logoutSuccess = () =>{
         type: 'logout-success'
     };
 }
+
+export const loginSuccess = (authState) =>{
+    return{
+        type: 'login-success',
+        payload:authState
+    };
+}
