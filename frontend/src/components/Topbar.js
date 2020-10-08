@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {logoutSuccess} from '../redux/authActions'
 
 class TopBar extends Component {
 
   render() {
 
-    const { isLoggedIn, username, onLogoutSuccess} = this.props
+    const { isLoggedIn, username,onLogoutSuccess} = this.props
   
 
     let links = (<ul className="navbar-nav ml-auto">
@@ -54,4 +56,21 @@ class TopBar extends Component {
   }
 }
 
-export default (TopBar);
+const mapStateToProps = (store) =>{
+
+    return{
+      isLoggedIn:store.isLoggedIn,
+      username:store.username,
+    }
+
+}
+
+const mapDispatchToProps = (dispatch) =>{
+  return {
+    onLogoutSuccess: function (){
+    return  dispatch(logoutSuccess());
+    }
+  }
+}
+
+export default  connect(mapStateToProps,mapDispatchToProps)(TopBar);
