@@ -1,125 +1,106 @@
-import React, { Component } from 'react'
-import { signup } from '../api/apiCalls'
-import ButtonWithProgress from '../components/ButtonWithProgress'
-import Input from '../components/Input'
-import withApiProgress from '../shared/ApiProgress'
+import React from 'react';
+import Input from '../components/Input';
+import ButtonWithProgress from '../components/ButtonWithProgress';
+import withApiProgress from '../shared/ApiProgress';
+import { connect } from 'react-redux';
+import { signupHandler } from '../redux/authActions';
 
-class UserSignupPage extends Component {
+class UserSignupPage extends React.Component {
+  state = {
+    username: null,
+    displayname: null,
+    password: null,
+    passwordRepeat: null,
+    errors: {}
+  };
 
-    state = {
-        username: null,
-        displayname: null,
-        password: null,
-        passwordRepeat: null,
-        pendingApiCall: false,
-        errors: {},
-        ispasswordMismatch: false
+  onChange = event => {
+    const { t } = this.props;
+    const { name, value } = event.target;
+    const errors = { ...this.state.errors };
+    errors[name] = undefined;
+    if (name === 'password' || name === 'passwordRepeat') {
+      if (name === 'password' && value !== this.state.passwordRepeat) {
+        errors.passwordRepeat = 'Password mismatch';
+      } else if (name === 'passwordRepeat' && value !== this.state.password) {
+        errors.passwordRepeat = 'Password mismatch';
+      } else {
+        errors.passwordRepeat = undefined;
+      }
     }
+    this.setState({
+      [name]: value,
+      errors
+    });
+  };
 
+  onClickSignup = async event => {
 
-    onChange = (event) => {
+    event.preventDefault();
 
-        const { name, value } = event.target
+    console.log("ad")
 
-        const errors = {...this.state.errors}
+    const { history, dispatch } = this.props;
+    const { push } = history;
 
-        errors[name] = undefined
+    const { username, displayname, password } = this.state;
 
+    const body = {
+      username,
+      displayname,
+      password
+    };
 
-        this.setState({
-            [name]: value,
-            errors,
-            ispasswordMismatch:false
-        })
-
-        if(name === "password" || name=== "passwordRepeat" ){
-
-            if(name==="password" && value !==this.state.passwordRepeat ){
-                
-                errors.passwordRepeat = "Password Mismatch";
-                
-                this.setState({
-                    ispasswordMismatch:true
-                })
-
-            }
-
-            else if(name==="passwordRepeat" && value !==this.state.password ){
-                
-                errors.passwordRepeat = "Password Mismatch";
-
-                this.setState({
-                    ispasswordMismatch:true
-                })
-
-            }
-
-        }
-
+    try {
+      await dispatch(signupHandler(body));
+      push('/');
+    } catch (error) {
+      if (error.response.data.validationErrors) {
+        this.setState({ errors: error.response.data.validationErrors });
+      }
     }
+  };
 
-    onClickSignUp = async (event) => {
+  render() {
+    
+    const { errors,ispasswordMismatch } = this.state;
+    const {username,displayname,password,passwordRepeat} = errors;
+    const {pendingApiCall} = this.props;
 
-      
-        event.preventDefault();
+    return (
+      <div>
+        <form>
 
-        const body = { ...this.state }
+          <div className="col text-center" style={{ marginBottom: "100px,", marginTop: "20px" }}>
+            <h1> Sign Up</h1>
+          </div>
 
-        try {
-            const response = await signup(body)
-        }
-        catch (error) {
-            console.log(error.response.data)
-            if(error.response.data.validationErrors){
-                this.setState({
-                    errors: error.response.data.validationErrors
-                })
-            }
-            
-        }
+          <div className="form-group">
+            <div className="container">
 
-        const {password,passwordRepeat} = this.state
+              <Input label="Username" name="username" error={username} onChange={this.onChange}></Input>
 
-    }
+              <Input label="Displayname" name="displayname" error={displayname} onChange={this.onChange}></Input>
 
-    render() {
+              <Input label="Password" type="password" name="password" error={password} onChange={this.onChange}></Input>
 
-        const { errors,ispasswordMismatch } = this.state;
-        const {username,displayname,password,passwordRepeat} = errors;
-        const {pendingApiCall} = this.props;
+              <Input label="PasswordRepeat" type="password" name="passwordRepeat" error={passwordRepeat} onChange={this.onChange}></Input>
 
-        return (
-            <div>
-                <form>
-
-                    <div className="col text-center" style={{ marginBottom: "100px,", marginTop: "20px" }}>
-                        <h1> Sign Up</h1>
-                    </div>
-
-                    <div className="form-group">
-                        <div className="container">
-                           
-                            <Input label="Username" name="username" error={username} onChange={this.onChange}></Input>
-
-                            <Input label="Displayname" name="displayname" error={displayname} onChange={this.onChange}></Input>
-
-                            <Input label="Password" type="password" name="password" error={password} onChange={this.onChange}></Input>
-                            
-                            <Input label="PasswordRepeat" type="password" name="passwordRepeat" error={passwordRepeat} onChange={this.onChange}></Input>
-
-                            <ButtonWithProgress pageName="Sign Up" pendingApiCall={pendingApiCall} ispasswordMismatch={ispasswordMismatch} onClick ={this.onClickSignUp}></ButtonWithProgress>
-
-                           
-
-                        </div>
-
-                    </div>
+              <ButtonWithProgress pageName="Sign Up" pendingApiCall={pendingApiCall} ispasswordMismatch={ispasswordMismatch} onClick={this.onClickSignup}></ButtonWithProgress>
 
 
-                </form>
+
             </div>
-        )
-    }
-}
 
-export default withApiProgress(UserSignupPage) ;
+          </div>
+
+
+        </form>
+      </div>
+    );
+  }
+}
+const UserSignupPageWithApiProgressForSignupRequest = withApiProgress(UserSignupPage);
+const UserSignupPageWithApiProgressForAuthRequest = withApiProgress(UserSignupPageWithApiProgressForSignupRequest);
+
+export default connect()(UserSignupPageWithApiProgressForAuthRequest);

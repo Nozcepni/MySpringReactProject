@@ -45,12 +45,8 @@ function getDisplayName(WrappedComponent){
     
         render() {
     
-            const {pendingApiCall} = this.state
-    
-            return (
-                    <WrappedComponent pendingApiCall={pendingApiCall} {...this.props}></WrappedComponent>
-                   
-            )
+            const pendingApiCall = this.state.pendingApiCall || this.props.pendingApiCall;
+            return <WrappedComponent {...this.props} pendingApiCall={pendingApiCall} />;
         }
     }
     

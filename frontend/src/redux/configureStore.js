@@ -39,7 +39,7 @@ const configureStore = () =>{
     
     store.subscribe(()=>{
       updateStateInStorage(store.getState());
-    })
+    });
 
     return store;
 
