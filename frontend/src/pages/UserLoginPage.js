@@ -1,44 +1,34 @@
-import React, { Component } from 'react'
+
 import Input from '../components/Input'
 import { login } from '../api/apiCalls'
 import withApiProgress from '../shared/ApiProgress'
 import ButtonWithProgress from '../components/ButtonWithProgress'
 import {loginHandler} from '../redux/authActions'
 import {connect} from 'react-redux';
+import React, { useEffect, useState } from "react";
 
 
-class UserLoginPage extends Component {
+const UserLoginPage = (props) =>  {
 
-    state={
-        username:null,
-        password:null,
-        error:null
-    }
 
-  
-    onChange = (event) => {
+    const [username,setUsername] = useState();
+    const [password,setPassword] = useState();
+    const [error,setError] = useState();
 
-        const { name, value } = event.target
+    useEffect(()=>{
+        setError(null)
+    },[username,password])
 
-        this.setState({
-            [name]: value,
-            error:null
-        })
+    const onClickLogin = async (event) => {
 
-    }
-
-    onClickLogin = async (event) => {
-
-        const {history,dispatch} = this.props
+        const {history,dispatch} = props
         const { push } = history;
-        const{username,password} = this.state
+       // const{username,password} = this.state
 
 
         event.preventDefault();
 
-        this.setState({
-            error:null
-        })
+        setError(null)
 
         const creds = {
           username,
@@ -51,18 +41,16 @@ class UserLoginPage extends Component {
         }
 
         catch (apiError) {
-            this.setState({
-                error: apiError.response.data.message
-            });
+
+            setError(apiError.response.data.message)
+            // this.setState({
+            //     error: apiError.response.data.message
+            // });
         }
 
     };
 
-    render() {
-
-        const {pendingApiCall} = this.props;
-
-        const { error,username,password } = this.state;
+        const {pendingApiCall} = props;
 
         const isEmpty= username && password;
 
@@ -73,8 +61,13 @@ class UserLoginPage extends Component {
                     <h1> Login</h1>
                 </div>
 
-                <Input onChange={this.onChange} name="username" label="Username"></Input>
-                <Input onChange={this.onChange} name="password" label="Password" type="password"></Input>
+                <Input onChange={(event) =>{
+                    setUsername(event.target.value)
+                }} 
+                name="username" label="Username"></Input>
+                <Input onChange={(event)=>{
+                    setPassword(event.target.value)
+                }} name="password" label="Password" type="password"></Input>
 
                 <div className="text-center">
                 { error && <div style={{marginTop:'25px', width:'20%', marginLeft:'450px'}} class="alert alert-danger" role="alert">
@@ -82,12 +75,12 @@ class UserLoginPage extends Component {
                 </div>}
                 </div>
 
-                <ButtonWithProgress pageName="Login" pendingApiCall={pendingApiCall} onClick ={this.onClickLogin}></ButtonWithProgress>
+                <ButtonWithProgress pageName="Login" pendingApiCall={pendingApiCall} onClick ={onClickLogin}></ButtonWithProgress>
 
 
             </div>
         )
-    }
+    
 }
 
 const LoginPagewithApiProgress =  withApiProgress(UserLoginPage)
