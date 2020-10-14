@@ -1,49 +1,44 @@
-import React from 'react';
+import React, { useEffect, useState } from "react";
 import Input from '../components/Input';
 import ButtonWithProgress from '../components/ButtonWithProgress';
 import withApiProgress from '../shared/ApiProgress';
 import { connect } from 'react-redux';
 import { signupHandler } from '../redux/authActions';
 
-class UserSignupPage extends React.Component {
-  state = {
+const UserSignupPage = (props) => {
+
+  const [form,setForm] = useState({
     username: null,
     displayname: null,
     password: null,
-    passwordRepeat: null,
-    errors: {}
-  };
+    passwordRepeat: null
+  })
 
-  onChange = event => {
-    const { t } = this.props;
+   const [errors,setErrors] = useState({});
+
+  const onChange = event => {
+   
     const { name, value } = event.target;
-    const errors = { ...this.state.errors };
-    errors[name] = undefined;
-    if (name === 'password' || name === 'passwordRepeat') {
-      if (name === 'password' && value !== this.state.passwordRepeat) {
-        errors.passwordRepeat = 'Password mismatch';
-      } else if (name === 'passwordRepeat' && value !== this.state.password) {
-        errors.passwordRepeat = 'Password mismatch';
-      } else {
-        errors.passwordRepeat = undefined;
-      }
-    }
-    this.setState({
-      [name]: value,
-      errors
-    });
-  };
+    const errorsCopy = { ...errors };
+    errorsCopy[name] = undefined;
+    setErrors(errorsCopy);
 
-  onClickSignup = async event => {
+    const formCopy= {...form};
+
+    setForm((previousForm)=>({...previousForm,[name]:value}))
+
+  };
+ 
+  const onClickSignup = async event => {
 
     event.preventDefault();
 
     console.log("ad")
 
-    const { history, dispatch } = this.props;
+    const { history, dispatch } = props;
     const { push } = history;
 
-    const { username, displayname, password } = this.state;
+    const { username, displayname, password } = form;
 
     const body = {
       username,
@@ -56,16 +51,20 @@ class UserSignupPage extends React.Component {
       push('/');
     } catch (error) {
       if (error.response.data.validationErrors) {
-        this.setState({ errors: error.response.data.validationErrors });
+        setErrors(error.response.data.validationErrors)
       }
     }
   };
 
-  render() {
     
-    const { errors,ispasswordMismatch } = this.state;
-    const {username,displayname,password,passwordRepeat} = errors;
-    const {pendingApiCall} = this.props;
+    const ispasswordMismatch  = undefined;
+    const {username: usernameError ,displayname:displaynameError,password:passwordError} = errors;
+    const {pendingApiCall} = props;
+
+    let passwordRepeatError;
+    if(form.password!==form.passwordRepeat){
+      passwordRepeatError="Password mismatch"
+    }
 
     return (
       <div>
@@ -78,15 +77,15 @@ class UserSignupPage extends React.Component {
           <div className="form-group">
             <div className="container">
 
-              <Input label="Username" name="username" error={username} onChange={this.onChange}></Input>
+              <Input label="Username" name="username" error={usernameError} onChange={onChange}></Input>
 
-              <Input label="Displayname" name="displayname" error={displayname} onChange={this.onChange}></Input>
+              <Input label="Displayname" name="displayname" error={displaynameError} onChange={onChange}></Input>
 
-              <Input label="Password" type="password" name="password" error={password} onChange={this.onChange}></Input>
+              <Input label="Password" type="password" name="password" error={passwordError} onChange={onChange}></Input>
 
-              <Input label="PasswordRepeat" type="password" name="passwordRepeat" error={passwordRepeat} onChange={this.onChange}></Input>
+              <Input label="PasswordRepeat" type="password" name="passwordRepeat" error={passwordRepeatError} onChange={onChange}></Input>
 
-              <ButtonWithProgress pageName="Sign Up" pendingApiCall={pendingApiCall} ispasswordMismatch={ispasswordMismatch} onClick={this.onClickSignup}></ButtonWithProgress>
+              <ButtonWithProgress pageName="Sign Up" pendingApiCall={pendingApiCall} ispasswordMismatch={ispasswordMismatch} onClick={onClickSignup}></ButtonWithProgress>
 
 
 
@@ -98,7 +97,7 @@ class UserSignupPage extends React.Component {
         </form>
       </div>
     );
-  }
+  
 }
 const UserSignupPageWithApiProgressForSignupRequest = withApiProgress(UserSignupPage);
 const UserSignupPageWithApiProgressForAuthRequest = withApiProgress(UserSignupPageWithApiProgressForSignupRequest);
