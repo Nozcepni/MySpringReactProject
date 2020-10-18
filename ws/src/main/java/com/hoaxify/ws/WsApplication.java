@@ -11,5 +11,7 @@ public class WsApplication {
 		SpringApplication.run(WsApplication.class, args);
 		
 	}
+	
+	
 
 }
