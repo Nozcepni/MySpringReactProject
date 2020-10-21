@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { getUsers } from '../api/apiCalls';
+import UserListItem from './UserListItem'
 
 class UserList extends Component {
   state = {
@@ -9,7 +10,7 @@ class UserList extends Component {
   componentDidMount() {
     getUsers().then(response => {
       this.setState({
-        users: response.data
+        users: response.data.content
         
       });
       console.log(this.state.users)
@@ -23,9 +24,7 @@ class UserList extends Component {
         <h3 className="card-header text-center">Users</h3>
         <div className="list-group-flush">
           {users.map(user => (
-            <div className="list-group-item list-group-item-action" key={user.username}>
-              {user.username}
-            </div>
+              <UserListItem key={user.username} user={user}/>
           ))}
         </div>
       </div>
